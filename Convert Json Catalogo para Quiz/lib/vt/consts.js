@@ -1,0 +1,3 @@
+const EV = {
+    CLICK: "click",
+}

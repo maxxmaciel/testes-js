@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+
+</body>
+
+<script src="EvinoJson.js"> </script>
+<script src="lib/jquery/3.6.1/jquery-3.6.1.min.js"></script>
+<script src="lib/std/std.js"></script>
+<script src="lib/vt/consts.js"></script>
+<script src="lib/vt/vt.js"></script>
+<script>
+    onload = () => {
+        var c = $('body');
+        const items = data.data.products.items;
+        var products = [{
+            data: ["1656470", '1000000504'],
+            id: 'A',
+            nome: "CLÁSSICO",
+            description: "Você obteve como resultado o perfil Clássico! Você busca vinhos que são reconhecidos internacionalmente por sua consistência, tipicidade e tradição, tanto do Novo, quanto do Velho Mundo.",
+            image: "image/192/classico.png",
+            products: []
+        },
+        {
+            data: ["1656470"],
+            id: 'B',
+            nome: "OUSADO",
+            description: "Você obteve como resultado o perfil Ousado! Para você, o melhor vinho é sempre o próximo. Está sempre à procura de vinhos originais e diferentes, de regiões, castas e métodos de produção menos conhecidos.",
+            image: "image/192/ousado.png",
+            products: []
+        }, {
+            data: ["1656470"],
+            id: 'C',
+            nome: "POTENTE",
+            description: "Você obteve como resultado o perfil Potente! Você busca vinhos intensos e encorpados, com grande concentração de aromas e sabores. Estes rótulos harmonizam com pratos igualmente intensos, e geralmente têm passagem por barricas de carvalho.",
+            image: "image/192/potente.png",
+            products: []
+        }, {
+            data: ["1656470"],
+            id: 'D',
+            nome: "REFRESCANTE",
+            description: "Você obteve como resultado o perfil Refrescante! Sua vibe são os vinhos leves, frutados e refrescantes, para beber na beira da praia ou da piscina. Com ou sem borbulhas, são perfeitos para consumir gelados ou com gelo.",
+            image: "image/192/refrescante.png",
+            products: []
+        }, {
+            data: ["1656470"],
+            id: 'E',
+            nome: "VERSÁTIL",
+            description: "Você obteve como resultado o perfil Versátil! Os vinhos perfeitos para você são aqueles que combinam com diversos momentos. O vinho deve se adaptar a todas as ocasiões, da maratona de série ao jantar harmonizado, passando pelo piquenique e pela festa com os amigos.",
+            image: "image/192/versatil.png",
+            products: []
+        }]
+
+        var obj = {};
+
+        function findProducts(p, items) {
+            return items.find(el => el.sku == p);
+        }
+
+        for (let idx in products) {
+
+            let el = products[idx];
+            let id = el.id;
+            let data = el.data
+
+
+            obj[id] = el;
+            for (let idx in data) {
+                let el = data[idx];
+                let product = findProducts(el, items);
+                if (std.is_null(product)) {
+                    console.log(`não achei o produto com sku = ${el}`)
+
+                } else {
+                    let c = product.characteristics
+
+                    let characteristics = [];
+                    for (let idx in c) {
+                        let el = c[idx];
+                        let tag = el.tag;
+                        characteristics[tag] = { image_url: el.image_url, tag: el.tag, tag_description: el.tag_description }
+                    }
+                    console.log(characteristics)
+                    /*  let characteristics_sommelier = [];
+ 
+                     let x = characteristics_sommelier;
+                     for (let i in x) {
+                         let el = c[i];
+                         let tag = el.tag;
+                         characteristics_sommelier[tag] = { image_url: el.image_url, tag: el.tag, tag_description: el.tag_description }
+                     } */
+
+                    obj[id].products.push({
+                        'sku': product.sku,
+                        "name": product.name,
+                        'category': product.category,
+                        "image": product.images[0],
+                        "description": product.short_description.html,
+                        'region': characteristics['Região'] ? characteristics['Região'].tag : "",
+                        'country': characteristics['País'] ? characteristics['País'].tag : '',
+                        'produtor': characteristics['Produtor'] ? characteristics['Produtor'].tag_description : '',
+                        'country_image_url': characteristics['País'] ? characteristics['País'].image_url : '',
+                        "score_bar": product.score_bar,
+                        'volume': characteristics['Volume'] ? characteristics['Volume'].tag_description : '',
+                        /* 'characteristics_sommelier': characteristics_sommelier, */
+                    })
+                }
+
+
+            }
+
+        }
+        console.log(obj);
+        c.html(JSON.stringify(obj));
+    };
+
+
+
+</script>
+
+</html>
